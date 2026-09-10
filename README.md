@@ -5,8 +5,10 @@ properties and date ranges, reservations with a real double-booking guard,
 dynamic seasonal pricing, front-desk check-in/check-out, housekeeping tracking,
 a tiered refund engine, invoicing, and aggregation-based occupancy reporting.
 
-**Backend only.** There is no frontend; the entire API is demonstrated through
-the committed Postman collection, which the course guidelines explicitly permit.
+**Backend-focused.** The API is the deliverable and is demonstrated in full
+through the committed Postman collection. A minimal static UI is also served
+from `public/` so the same endpoints can be exercised in a browser; it holds no
+business logic of its own and adds no functionality beyond the documented API.
 
 ---
 
@@ -80,6 +82,7 @@ with the REST surface as the thin layer on top.
 | Logging | `morgan` | ^1.10.0 |
 | Dev reload | `nodemon` | ^3.1.9 |
 | API demonstration | Postman collection v2.1 | committed in `docs/` |
+| Demonstration UI | Static HTML/CSS/vanilla JS, served by `express.static` | no build step, no framework |
 
 `bcryptjs` is the pure-JavaScript implementation of bcrypt. It is API-compatible
 with `bcrypt` and needs no native build toolchain, which keeps `npm install`
@@ -590,8 +593,12 @@ Also included, because they are the interesting ones to defend in a viva:
 
 ## 12. Known Limitations
 
-- **No frontend.** Postman-only demonstration, which the course guidelines
-  explicitly permit.
+- **The UI is a thin demonstration layer, not a product.** Static HTML, CSS and
+  vanilla JavaScript served from `public/`, with no build step, no framework and
+  no client-side state beyond the JWT in `localStorage`. It calls only the
+  documented endpoints and recomputes no prices; ObjectIds are entered directly
+  in some admin forms rather than being resolved through pickers. The Postman
+  collection remains the authoritative demonstration of the API.
 - **No payment, SMS or email integration.** Refunds are computed and recorded
   against the booking, not actually disbursed.
 - **Self-built JWT auth only.** No social login and no refresh-token rotation;
@@ -661,6 +668,10 @@ helmet, cors, express-rate-limit, morgan, dotenv, nodemon.
 │   └── bookingRef.js              # Atomic human-readable reference generator
 ├── seed/
 │   └── seed.js                    # Idempotent demo data loader
+├── public/                         # Demonstration UI (static, no build step)
+│   ├── index.html                  # Markup and one template per module
+│   ├── styles.css
+│   └── app.js                      # fetch() wrapper + a view per module
 ├── docs/
 │   ├── P03_Hotel_Booking.postman_collection.json
 │   ├── P03_Hotel_Booking.postman_environment.json

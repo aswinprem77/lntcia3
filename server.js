@@ -5,6 +5,7 @@
  * mount routes, mount notFound then errorHandler, listen. No business logic
  * lives in this file.
  */
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -42,6 +43,10 @@ const authLimiter = rateLimit({
     errorCode: 'RATE_LIMITED'
   }
 });
+
+// The demonstration UI. Static only -- it consumes the same public API as the
+// Postman collection and holds no logic of its own.
+app.use(express.static(path.join(__dirname, 'public')));
 
 // --- Routes --------------------------------------------------------------
 app.get('/api/health', (req, res) => {

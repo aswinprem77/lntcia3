@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P03 — Hotel Room Booking &amp; Reservation Platform</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">P03</span>
+    <span class="brand-name">Hotel Booking &amp; Reservation</span>
+  </div>
+  <div class="session" id="session" hidden>
+    <span id="sessionUser"></span>
+    <span class="role-chip" id="sessionRole"></span>
+    <button class="btn btn-ghost" id="logoutBtn">Log out</button>
+  </div>
+</header>
+
+<div id="toast" class="toast" hidden></div>
+
+<!-- ============ AUTH (M1) ============ -->
+<main class="auth-wrap" id="authView">
+  <div class="auth-card">
+    <div class="tabs">
+      <button class="tab active" data-authtab="login">Log in</button>
+      <button class="tab" data-authtab="register">Register</button>
+    </div>
+
+    <form id="loginForm" class="auth-form">
+      <label>Email<input type="email" name="email" required placeholder="guest1@hotel.test"></label>
+      <label>Password<input type="password" name="password" required placeholder="Guest@123"></label>
+      <button class="btn btn-primary" type="submit">Log in</button>
+      <div class="demo-creds">
+        <p>Seeded demo accounts</p>
+        <button type="button" class="chip" data-fill="admin@hotel.test|Admin@123">Admin</button>
+        <button type="button" class="chip" data-fill="staff.blr@hotel.test|Staff@123">Staff (BLR)</button>
+        <button type="button" class="chip" data-fill="guest1@hotel.test|Guest@123">Guest</button>
+      </div>
+    </form>
+
+    <form id="registerForm" class="auth-form" hidden>
+      <label>Name<input name="name" required minlength="2" maxlength="80"></label>
+      <label>Email<input type="email" name="email" required></label>
+      <label>Password<input type="password" name="password" required minlength="6"></label>
+      <label>Phone <span class="opt">optional</span><input name="phone" placeholder="9900123456"></label>
+      <button class="btn btn-primary" type="submit">Create guest account</button>
+    </form>
+  </div>
+</main>
+
+<!-- ============ APP ============ -->
+<main class="app" id="appView" hidden>
+  <nav class="nav" id="nav"></nav>
+  <section class="content" id="content"></section>
+</main>
+
+<!-- ============ TEMPLATES ============ -->
+
+<!-- M4 Availability Search -->
+<template id="tpl-search">
+  <h2>Availability Search <span class="mod">M4</span></h2>
+  <form class="row-form" id="searchForm">
+    <label>City<input name="city" placeholder="Bengaluru"></label>
+    <label>Check-in<input type="date" name="checkIn" required></label>
+    <label>Check-out<input type="date" name="checkOut" required></label>
+    <label>Guests<input type="number" name="guests" min="1" value="2"></label>
+    <label>Min rating<input type="number" name="minRating" min="0" max="5" step="0.1"></label>
+    <button class="btn btn-primary" type="submit">Search</button>
+  </form>
+  <div id="searchResults"></div>
+</template>
+
+<!-- M5 Booking -->
+<template id="tpl-book">
+  <h2>Create Reservation <span class="mod">M5</span></h2>
+  <form class="grid-form" id="bookForm">
+    <label>Hotel ID<input name="hotelId" required></label>
+    <label>Room Type ID<input name="roomTypeId" required></label>
+    <label>Check-in<input type="date" name="checkIn" required></label>
+    <label>Check-out<input type="date" name="checkOut" required></label>
+    <label>Guests<input type="number" name="guests" min="1" value="2" required></label>
+    <button class="btn btn-primary" type="submit">Book</button>
+  </form>
+  <p class="hint">Price and status are decided server-side and cannot be supplied here.</p>
+  <div id="bookResult"></div>
+</template>
+
+<!-- M11/M10/M12 Guest history -->
+<template id="tpl-mybookings">
+  <h2>My Bookings <span class="mod">M11 · M10 · M12</span></h2>
+  <div class="row-form">
+    <label>Filter<select id="histStatus">
+      <option value="">All statuses</option>
+      <option>Reserved</option><option>Confirmed</option><option>CheckedIn</option>
+      <option>CheckedOut</option><option>Cancelled</option>
+    </select></label>
+    <label class="inline"><input type="checkbox" id="histUpcoming"> Upcoming only</label>
+    <button class="btn" id="histRefresh">Refresh</button>
+  </div>
+  <div id="histList"></div>
+</template>
+
+<!-- M5/M7/M8 Staff bookings -->
+<template id="tpl-bookings">
+  <h2>Bookings Desk <span class="mod">M5 · M7 · M8</span></h2>
+  <div class="row-form">
+    <label>Status<select id="bkStatus">
+      <option value="">All</option>
+      <option>Reserved</option><option>Confirmed</option><option>CheckedIn</option>
+      <option>CheckedOut</option><option>Cancelled</option>
+    </select></label>
+    <button class="btn" id="bkRefresh">Refresh</button>
+  </div>
+  <div id="bkList"></div>
+</template>
+
+<!-- M9 Housekeeping -->
+<template id="tpl-housekeeping">
+  <h2>Housekeeping <span class="mod">M9</span></h2>
+  <div class="row-form">
+    <label>Hotel ID<input id="hkHotelId" placeholder="hotel ObjectId"></label>
+    <button class="btn btn-primary" id="hkLoad">Load board</button>
+  </div>
+  <div id="hkBoard"></div>
+</template>
+
+<!-- M2 Hotels -->
+<template id="tpl-hotels">
+  <h2>Properties <span class="mod">M2</span></h2>
+  <form class="grid-form" id="hotelForm">
+    <label>Name<input name="name" required maxlength="120"></label>
+    <label>City<input name="city" required></label>
+    <label>Rating<input type="number" name="rating" min="0" max="5" step="0.1"></label>
+    <label>Address<input name="address"></label>
+    <button class="btn btn-primary" type="submit">Create property</button>
+  </form>
+  <div class="row-form">
+    <label>Filter city<input id="hotelCity"></label>
+    <button class="btn" id="hotelRefresh">Refresh list</button>
+  </div>
+  <div id="hotelList"></div>
+</template>
+
+<!-- M3 Room types + rooms -->
+<template id="tpl-roomtypes">
+  <h2>Room Types &amp; Inventory <span class="mod">M3</span></h2>
+  <div class="row-form">
+    <label>Hotel ID<input id="rtHotelId" placeholder="hotel ObjectId"></label>
+    <button class="btn btn-primary" id="rtLoad">Load room types</button>
+  </div>
+  <form class="grid-form" id="rtForm">
+    <label>Name<input name="name" required></label>
+    <label>Base price<input type="number" name="basePrice" min="1" step="0.01" required></label>
+    <label>Total rooms<input type="number" name="totalRooms" min="1" required></label>
+    <label>Capacity<input type="number" name="capacity" min="1" required></label>
+    <button class="btn btn-primary" type="submit">Add room type</button>
+  </form>
+  <div id="rtList"></div>
+  <h3>Add a physical room</h3>
+  <form class="row-form" id="roomForm">
+    <label>Room Type ID<input name="roomTypeId" required></label>
+    <label>Room number<input name="roomNumber" required></label>
+    <button class="btn" type="submit">Add room</button>
+  </form>
+</template>
+
+<!-- M6 Pricing -->
+<template id="tpl-pricing">
+  <h2>Dynamic Pricing Rules <span class="mod">M6</span></h2>
+  <div class="row-form">
+    <label>Room Type ID<input id="prRoomTypeId" placeholder="roomType ObjectId"></label>
+    <button class="btn btn-primary" id="prLoad">Load rules</button>
+  </div>
+  <form class="grid-form" id="prForm">
+    <label>Season<input name="season" required></label>
+    <label>Multiplier<input type="number" name="multiplier" min="0.1" max="5" step="0.05" required></label>
+    <label>Start date<input type="date" name="startDate"></label>
+    <label>End date<input type="date" name="endDate"></label>
+    <label>Priority<input type="number" name="priority" value="0"></label>
+    <label class="inline"><input type="checkbox" name="appliesToWeekend"> Weekend only</label>
+    <button class="btn btn-primary" type="submit">Create rule</button>
+  </form>
+  <p class="hint">Multipliers are never stacked — the highest-priority matching rule wins.</p>
+  <div id="prList"></div>
+  <h3>Price preview</h3>
+  <form class="row-form" id="quoteForm">
+    <label>Room Type ID<input name="roomTypeId" required></label>
+    <label>Check-in<input type="date" name="checkIn" required></label>
+    <label>Check-out<input type="date" name="checkOut" required></label>
+    <button class="btn" type="submit">Quote</button>
+  </form>
+  <div id="quoteResult"></div>
+</template>
+
+<!-- M13 Reports -->
+<template id="tpl-reports">
+  <h2>Occupancy &amp; Revenue Reports <span class="mod">M13</span></h2>
+  <form class="row-form" id="reportForm">
+    <label>From<input type="date" name="from" required></label>
+    <label>To<input type="date" name="to" required></label>
+    <label>Group revenue by<select name="groupBy">
+      <option value="hotel">Hotel</option>
+      <option value="roomType">Room type</option>
+      <option value="month">Month</option>
+    </select></label>
+    <button class="btn btn-primary" type="submit">Run reports</button>
+  </form>
+  <div id="reportResult"></div>
+</template>
+
+<script src="app.js"></script>
+</body>
+</html>
