@@ -26,10 +26,10 @@ business logic of its own and adds no functionality beyond the documented API.
 
 | S.No | Student Name | Roll No. | Department | Section |
 |---|---|---|---|---|
-| 1 | `<NAME>` | `<ROLL>` | `<DEPT>` | `<SEC>` |
-| 2 | `<NAME>` | `<ROLL>` | `<DEPT>` | `<SEC>` |
-| 3 | `<NAME>` | `<ROLL>` | `<DEPT>` | `<SEC>` |
-| 4 | `<NAME>` | `<ROLL>` | `<DEPT>` | `<SEC>` |
+| 1 | BLESSON BABY/2460346/COMPUTER SCIENCE AND ENGINEERING/5BTCSA
+| 2 | ANURAG ETTA/2460336/ COMPUTER SCIENCE AND ENGINEERING/5BTCSA
+| 3 | ASWIN PREM P P /2460477/COMPUTER SCIENCE AND ENGINEERING/5BTCSA
+| 4 | Anishkaarthik 2460330 5BTCSACOMPUTER SCIENCE ENGINEERING
 
 **GitHub Repository:** `<https://github.com/...>`
 
