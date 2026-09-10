@@ -545,6 +545,11 @@ Two files in `docs/`:
 - `P03_Hotel_Booking.postman_collection.json`
 - `P03_Hotel_Booking.postman_environment.json`
 
+A published run of the full suite (181 assertions, 0 failures) is also viewable
+here: <https://helen-biju-7311715.postman.co/workspace/HELEN-BIJU-2460371's-Workspace~fe3e72a3-95ee-421d-8a83-fce9fbbacca8/run/58089418-d7707bfd-4d85-4497-b2be-dc2de6b8457c?action=share&creator=58089418&active-environment=58089418-97e7a178-494e-4c12-b706-6ff47fa85d6a>
+The committed files above remain the source of truth; the link requires access
+to the Postman workspace.
+
 **To run:**
 
 1. Postman → **Import** → select both files.
