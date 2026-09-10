@@ -24,8 +24,7 @@ business logic of its own and adds no functionality beyond the documented API.
 **Semester:** 5th Semester
 **Team Number:** `<NN>`
 
-| S.No | Student Name | Roll No. | Department | Section |
-|---|---|---|---|---|
+
 | 1 | BLESSON BABY/2460346/COMPUTER SCIENCE AND ENGINEERING/5BTCSA
 | 2 | ANURAG ETTA/2460336/ COMPUTER SCIENCE AND ENGINEERING/5BTCSA
 | 3 | ASWIN PREM P P /2460477/COMPUTER SCIENCE AND ENGINEERING/5BTCSA
